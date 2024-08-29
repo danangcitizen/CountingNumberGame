@@ -1,0 +1,25 @@
+.bg{
+    position: relative;
+}
+.bg_mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.bg_store {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.351);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  filter: blur(2px);
+}
+ .bg_mask, .bg_store{
+    border-radius: 5px;
+}
+.nav_top button{
+  width: 70px;
+  
+}
