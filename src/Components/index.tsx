@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import React, { useEffect, useState } from "react"; // , { useState }
 import "./style.css";
 
@@ -14,13 +13,11 @@ const Main: React.FC = () => {
   const [isCorrectNumber, setIsCorrectNumber] = useState<number>(0)
   const [isInCorrectNumber, setIsInCorrectNumber] = useState<number>(0)
   const [challengeCurrent, setChallengeCurrent] = useState<number>();
-  const [challengeNext, setChallengeNext] = useState<number>();
   const [arrayAssume, setArrayAssume] = useState<ArrayAssume[]>([]);
   const [correctIndex, setCorrectIndex] = useState<number>(1);
   const [isStatusPlay, setIsStatusPlay] = useState<boolean>(false); // start | restart; 
   const [isStatusGame, setIsStatusGame] = useState<number>(0); //  0: start; 1:done; 2: game over
   const [timeCurrent, setTimeCurrent] = useState<number>(0);
-  const [intervalId, setIntervalId] = useState<number | null>(null);
 
   const handlePlayClick = () =>{
     if(updateChallengePoint() > 0 ){
@@ -31,8 +28,6 @@ const Main: React.FC = () => {
       setIsInCorrectNumber(0);
       setIsCorrectNumber(0);
       setTimeCurrent(0);
-      
-      
     } else {
       alert(`Please input a number`)
     } 
@@ -42,6 +37,17 @@ const Main: React.FC = () => {
     const inputElement = document.getElementById('challengePoint') as HTMLInputElement;
     const value = parseInt(inputElement.value, 10)
     return value
+  }
+
+  const creativeArrayNumber = (point: number): ArrayAssume[] =>{
+    const newArray = Array.from({length: point}, (_,i)=> i+1);
+    const arrayFinal = newArray.map( (item)=>({
+        order: item,
+        top: `${Math.floor(Math.random()*340) + 3}`,
+        left: `${Math.floor(Math.random()*480) + 3}`,
+        layer: point-item
+      }))
+    return arrayFinal
   }
 
   const handleClickNumber = (order : number) =>{
@@ -55,7 +61,6 @@ const Main: React.FC = () => {
         }, 500)
         if(newFilteredArray.length === 0){
           setIsStatusGame(1);
-
         }
         setIsCorrectNumber(correctIndex); 
       } else{
@@ -70,25 +75,9 @@ const Main: React.FC = () => {
     
   }
 
-  const creativeArrayNumber = (point: number): ArrayAssume[] =>{
-    const newArray = Array.from({length: point}, (_,i)=> i+1);
-    const arrayFinal = newArray.map( (item, index)=>({
-        order: item,
-        top: `${Math.floor(Math.random()*340) + 3}`,
-        left: `${Math.floor(Math.random()*480) + 3}`,
-        layer: point-item
-      }))
-    return arrayFinal
-  }
-
   useEffect(()=>{
-    if (challengeCurrent !== undefined && challengeNext !== undefined){
-      setChallengeCurrent(challengeNext);
-    }
-    if (isStatusGame === 1) {
-      setIsStatusPlay(true);
-      setIsCorrectNumber(0);
-      setIsInCorrectNumber(0);
+    if (challengeCurrent !== undefined ){ 
+      setChallengeCurrent(challengeCurrent);
     }
     let intervalId: any;
     if (isStatusGame === 0 && isStatusPlay) {
@@ -97,14 +86,18 @@ const Main: React.FC = () => {
       }, 100);
     } else {
       clearInterval(intervalId);
-      // Save the final time if the game is over (isStatusGame === 1 or 2)
       if (isStatusGame !== 0) {
         setTimeCurrent(timeCurrent);
       }
     }
+    if (isStatusGame === 1) {
+      setIsStatusPlay(true);
+      setIsCorrectNumber(0);
+      setIsInCorrectNumber(0);
+    }
 
   return () => clearInterval(intervalId);
-  }, [challengeCurrent, challengeNext, arrayAssume, isStatusGame,isStatusPlay, isCorrectNumber, isInCorrectNumber])
+  }, [challengeCurrent, arrayAssume, isStatusGame,isStatusPlay, isCorrectNumber, isInCorrectNumber])
 
   return (
     <>
@@ -156,7 +149,7 @@ const Main: React.FC = () => {
                         ${ (item.order === isCorrectNumber ? (" delayed-removal bg-green-600"): ("bg-white"))} 
                         ${ (item.order === isInCorrectNumber ? ("bg-red-600 delay") : (""))}
                         ${ isStatusGame === 2 ? ("cursor-not-allowed  "): ("")}
-                      `} //  delayed-removal
+                      `} 
                       style={
                         {zIndex: item.layer , top: `${item.top}px`, left: `${item.left}px`}
                       }
@@ -164,15 +157,12 @@ const Main: React.FC = () => {
                       >
                       {item.order}
                     </span>
-                    
-                  //)
                   )
                 )           
               ) 
               : ( (""))
             }            
             </>
-            
           </div>
         </div>
       </div>
