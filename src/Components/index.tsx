@@ -55,7 +55,7 @@ const Main: React.FC = () => {
       setCorrectIndex(correctIndex + 1) 
       console.log(correctIndex);  
       if( order === correctIndex){
-        const newFilteredArray = arrayAssume.filter((item, index) => item.order !== order);
+        const newFilteredArray = arrayAssume.filter((item) => item.order !== order);
         setTimeout(()=>{
           setArrayAssume(newFilteredArray); 
         }, 500)
